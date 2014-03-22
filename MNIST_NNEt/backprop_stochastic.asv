@@ -1,0 +1,20 @@
+function [ gradients ] = backprop_stochastic( nnet, input, target )
+%BACKPROP_STOCHASTIC Summary of this function goes here
+    [output, nnet] = feed_forward(nnet, input);
+    
+    % Backwards propogation of errors to the second hidden layer
+    dE_dYOut = target - output;
+    dE_dZOut = dE_dYOut .* output .* (1 - output);
+    dE_dTheta3 = dE_dZOut * nnet.hid_units2';
+    dE_dYHid2 = nnet.theta3(:, 1:end-1)' * output;
+    
+    % Backwards propogation of errors to the first hidden layer
+    dE_dZHid2 = dE_dYHid2 .* nnet.hid_units2(:, 1:end-1) .* (1 - nnet.hid_units2(:, 1:end-1));
+    dE_dTheta2 = dE_dZHid2 * nnet.hid_units1';
+    dE_dYHid1 = nnet.theta2(:, 1:end-1)' * output;
+    
+    
+    gradients = {dE_dTheta3, 0};
+
+end
+
